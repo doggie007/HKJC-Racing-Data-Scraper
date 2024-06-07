@@ -12,12 +12,14 @@ import time
 DEBUG = True
 
 
-class Scraper:
-    def __init__(self, start_date : datetime.datetime, end_date : datetime.datetime):
+class RaceScraper:
+    def __init__(self, start_date : datetime.datetime, end_date : datetime.datetime, race_info_folder_path : str, race_result_folder_path : str):
         self.base_url = "https://racing.hkjc.com/racing/information/english/Racing/LocalResults.aspx"
-        self.successful_scrapes = 0 # A successful scrape is 1 race 
+        self.successful_scrapes = 0 # A successful scrape is 1 successful race result scraped 
         self.start_date = start_date
         self.end_date = end_date
+        self.info_path = race_info_folder_path
+        self.result_path = race_result_folder_path
 
     def parse_race_info(self, soup : BeautifulSoup) -> Optional[pd.DataFrame]:
         table = soup.find('table', style="width: 760px;")
@@ -130,10 +132,9 @@ class Scraper:
 
         # Write to folder
         path_friendly_date = date.strftime('%Y-%m-%d')
-        # subfolder_path = os.path.join('Data', subfolder_name)
-        # os.makedirs(subfolder_path)
-        parsed_race_info.to_csv(os.path.join('Data/Race-Info',  f"{path_friendly_date}_{race_num}_info.csv"), index = False)
-        parsed_race_results.to_csv(os.path.join('Data/Race-Result',  f"{path_friendly_date}_{race_num}_result.csv"), index = False)
+
+        parsed_race_info.to_csv(os.path.join(self.info_path,  f"{path_friendly_date}_{race_num}_info.csv"), index = False)
+        parsed_race_results.to_csv(os.path.join(self.result_path,  f"{path_friendly_date}_{race_num}_result.csv"), index = False)
 
         return True
 
@@ -165,75 +166,3 @@ class Scraper:
         print(f"Successfully scraped {self.successful_scrapes}; Total attempted {tried}; Time taken {time_taken}s; Seconds per scrape {time_taken / tried}")
 
 
-
-
-
-
-scraper = Scraper(datetime.datetime(2023, 5, 15), datetime.datetime(2024, 5, 15))
-scraper.scrape()
-# scraper.scrape_specific(datetime.datetime(2024, 5, 5), 2)
-
-
-
-# base_url = 
-
-# params = {
-#     "RaceDate": "2024/05/15",
-#     "RaceNo": "1"
-# }
-
-
-
-
-# print(r.url)
-
-# # print(soup)
-
-# table = soup.find('table', class_="f_tac table_bd draggable")
-
-
-
-
-# if table:
-
-#     table_df = pd.read_html(StringIO(str(table)))[0]
-#     # table_df = table_df.drop(columns=['LBW', 'Trainer', ''])
-#     # print(table_df.columns)
-
-#     horse_urls = []
-#     data = table.find('tbody')
-#     rows = data.find_all('tr')
-#     for row in rows:
-#         items = row.find_all('td')
-#         horse_url = items[2].find("a").get('href')
-#         horse_urls.append(horse_url)
-    
-#     # table_df.insert(3, "Horse URL", horse_urls, True)
-
-
-#     print(table_df)
-
-
-
-# table = soup.find('table', style="width: 760px;")
-
-# if table:
-
-#     info = soup.find('span', class_="f_fl f_fs13").text.split()
-
-#     date = info[2]
-
-#     location = "HV" if info[3] == "Happy" else "SH"
-
-#     data = table.find('tbody')
-    
-#     info = list(map(str.strip,data.find("td", style="width: 385px;").text.split('-')))
-
-
-#     class_num = info[0].split()[1]
-#     distance = info[1]
-
-
-
-
-#     # table_df = pd.read_html(StringIO(str(table)), )[0]
