@@ -10,6 +10,13 @@ Note:
 - Only local races are scraped
 - Only scrapes races where the top-left corner displays "Class x", likely missing out on Group 1 races and other special event races
 
+Usage:
+```
+git clone https://github.com/doggie007/HKJC-Racing-Data-Scraper.git
+cd HKJC-Racing-Data-Scraper
+pip install -r requirements.txt
+```
+
 
 ## data_handler.py
 Currently in development
